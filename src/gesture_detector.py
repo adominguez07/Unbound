@@ -7,12 +7,12 @@ from typing import Callable
 # Raise trigger to make a gesture harder to fire; lower it to make it easier.
 # Release must always be below trigger (hysteresis prevents flicker).
 
-TRIGGER_WINK_LEFT     = 0.45
-TRIGGER_WINK_RIGHT    = 0.45
+TRIGGER_WINK_LEFT     = 0.60
+TRIGGER_WINK_RIGHT    = 0.60
 TRIGGER_MOUTH_OPEN    = 0.50
 TRIGGER_SMILE         = 0.55
-TRIGGER_PUCKER        = 0.50
-TRIGGER_EYEBROW_RAISE = 0.45
+TRIGGER_PUCKER        = 0.80
+TRIGGER_EYEBROW_RAISE = 0.80
 TRIGGER_CHEEK_PUFF    = 0.40
 
 RELEASE_WINK_LEFT     = 0.25
@@ -27,7 +27,7 @@ RELEASE_CHEEK_PUFF    = 0.25
 BLINK_CROSS_EYE_MAX = 0.40
 
 # Activations held longer than this become a hold instead of a tap (milliseconds).
-HOLD_DURATION_MS = 600
+HOLD_DURATION_MS = 750
 
 # Winks released faster than this are treated as accidental blinks and ignored.
 # A normal blink is ~150-400 ms; raise this if blinks still trigger clicks.
