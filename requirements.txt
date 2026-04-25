@@ -1,0 +1,9 @@
+opencv-python>=4.9
+mediapipe>=0.10.14
+pyautogui>=0.9.54
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.6
+numpy>=1.26
+pywebview>=5.0
+pyinstaller>=6.5

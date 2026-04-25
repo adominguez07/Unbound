@@ -1,0 +1,27 @@
+{
+  "camera_index": 0,
+  "movement_mode": "joystick",
+  "sensitivity": 1.5,
+  "smoothing_alpha": 0.3,
+  "deadzone_radius": 0.02,
+  "failsafe_enabled": true,
+  "hold_duration_ms": 600,
+  "gesture_bindings": {
+    "wink_left": "left_click",
+    "wink_right": "right_click",
+    "mouth_open": "double_click",
+    "smile": "none",
+    "pucker": "scroll_up",
+    "eyebrow_raise": "pause_tracking",
+    "cheek_puff": "scroll_down"
+  },
+  "gesture_thresholds": {
+    "wink_left":     {"trigger": 0.5, "release": 0.3},
+    "wink_right":    {"trigger": 0.5, "release": 0.3},
+    "mouth_open":    {"trigger": 0.5, "release": 0.3},
+    "smile":         {"trigger": 0.6, "release": 0.4},
+    "pucker":        {"trigger": 0.5, "release": 0.3},
+    "eyebrow_raise": {"trigger": 0.5, "release": 0.3},
+    "cheek_puff":    {"trigger": 0.5, "release": 0.3}
+  }
+}
