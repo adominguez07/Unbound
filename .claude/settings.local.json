@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(C:\\\\Users\\\\AEDom\\\\Desktop\\\\Unbound\\\\.venv\\\\Scripts\\\\pip.exe install SpeechRecognition 2>&1)"
-    ]
-  }
-}
