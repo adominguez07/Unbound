@@ -9,7 +9,6 @@ const GESTURES = {
   smile:         'Smile',
   pucker:        'Pucker / Kiss',
   eyebrow_raise: 'Eyebrow Raise',
-  cheek_puff:    'Cheek Puff',
 };
 
 const ACTIONS = {
@@ -32,7 +31,6 @@ const GESTURE_BLENDSHAPES = {
   smile:         ['mouthSmileLeft', 'mouthSmileRight'],
   pucker:        ['mouthPucker'],
   eyebrow_raise: ['browInnerUp'],
-  cheek_puff:    ['cheekPuff'],
 };
 
 // Blendshape names shown in the live bars section
@@ -42,7 +40,6 @@ const TRACKED_BLENDSHAPES = [
   'mouthSmileLeft', 'mouthSmileRight',
   'mouthPucker',
   'browInnerUp',
-  'cheekPuff',
   'browOuterUpLeft', 'browOuterUpRight',
   'mouthFrownLeft', 'mouthFrownRight',
 ];
@@ -271,8 +268,10 @@ function wireButtons() {
     await loadSettings();
   });
 
+  document.getElementById('btn-speech-toggle').addEventListener('click', toggleSpeech);
+
   document.getElementById('btn-quit').addEventListener('click', async () => {
-    if (!confirm('Quit NoseCursor?')) return;
+    if (!confirm('Quit Unbound?')) return;
     await fetch('/api/quit', { method: 'POST' });
     window.close();
   });
@@ -382,6 +381,7 @@ function startStatusPolling() {
 }
 
 function applyStatus(data) {
+  applySpeechStatus(data.speech_active ?? false);
   isPaused = data.paused;
   const badge = document.getElementById('tracking-badge');
   const btn   = document.getElementById('btn-pause-resume');
@@ -428,6 +428,39 @@ function updateSliderDisplay(el) {
   if (valEl) valEl.textContent = parseFloat(el.value).toFixed(
     el.step && parseFloat(el.step) >= 1 ? 0 : 2
   );
+}
+
+async function toggleSpeech() {
+  const btn = document.getElementById('btn-speech-toggle');
+  const badge = document.getElementById('speech-badge');
+  const isActive = badge.classList.contains('badge-active');
+  btn.disabled = true;
+  try {
+    const endpoint = isActive ? '/api/speech/stop' : '/api/speech/start';
+    const res = await fetch(endpoint, { method: 'POST' });
+    if (!res.ok) {
+      const err = await res.json();
+      alert(`Speech error: ${err.detail}`);
+    }
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function applySpeechStatus(active) {
+  const btn = document.getElementById('btn-speech-toggle');
+  const badge = document.getElementById('speech-badge');
+  if (active) {
+    btn.textContent = 'Disable Speech Mode';
+    btn.className = 'btn btn-danger btn-wide';
+    badge.textContent = 'Listening';
+    badge.className = 'badge badge-active';
+  } else {
+    btn.textContent = 'Enable Speech Mode';
+    btn.className = 'btn btn-primary btn-wide';
+    badge.textContent = 'Off';
+    badge.className = 'badge badge-paused';
+  }
 }
 
 function showSaveStatus(msg, type) {

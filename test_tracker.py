@@ -29,7 +29,6 @@ WATCHED_BLENDSHAPES = [
     "jawOpen",
     "mouthSmileLeft",
     "browInnerUp",
-    "cheekPuff",
     "mouthPucker",
 ]
 
@@ -65,9 +64,9 @@ def main() -> None:
         neutral_samples.append(result.nose_tip)
 
         remaining = CALIBRATION_FRAMES - len(neutral_samples)
-        cv2.imshow("NoseCursor — calibrating (hold still)", result.frame)
+        cv2.imshow("Unbound — calibrating (hold still)", result.frame)
         cv2.setWindowTitle(
-            "NoseCursor — calibrating (hold still)",
+            "Unbound — calibrating (hold still)",
             f"Calibrating... {remaining} frames left",
         )
         if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -119,7 +118,7 @@ def main() -> None:
                 cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                 (0, 0, 255) if cursor.paused else (0, 255, 0), 2,
             )
-            cv2.imshow("NoseCursor (Q to quit)", preview)
+            cv2.imshow("Unbound (Q to quit)", preview)
             if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
     finally:

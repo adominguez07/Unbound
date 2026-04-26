@@ -6,7 +6,7 @@ from typing import Any, Callable
 from .resource_paths import resource_path
 
 # Where user settings persist between runs
-_USER_SETTINGS_PATH = Path.home() / ".nose_cursor" / "settings.json"
+_USER_SETTINGS_PATH = Path.home() / ".unbound" / "settings.json"
 
 # Keys that must be floats in [0.0, 1.0]
 _UNIT_FLOAT_KEYS = {
@@ -30,7 +30,7 @@ _VALID_ACTIONS = {
 
 _VALID_GESTURES = {
     "wink_left", "wink_right", "mouth_open",
-    "smile", "pucker", "eyebrow_raise", "cheek_puff",
+    "smile", "pucker", "eyebrow_raise",
 }
 
 
@@ -38,7 +38,7 @@ class SettingsManager:
     """
     Loads, validates, persists, and hot-reloads application settings.
 
-    Settings are written to ~/.nose_cursor/settings.json.  On first run the
+    Settings are written to ~/.unbound/settings.json.  On first run the
     bundled config/default_settings.json is copied there automatically.
 
     Register a callback with on_change() to be notified when any value changes

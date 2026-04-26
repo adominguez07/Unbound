@@ -19,7 +19,6 @@ _GESTURE_BLENDSHAPES: dict[str, list[str]] = {
     "smile":         ["mouthSmileLeft", "mouthSmileRight"],
     "pucker":        ["mouthPucker"],
     "eyebrow_raise": ["browInnerUp"],
-    "cheek_puff":    ["cheekPuff"],
 }
 
 

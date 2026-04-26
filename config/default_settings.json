@@ -13,11 +13,10 @@
   "gesture_bindings": {
     "wink_left":     "open_osk",
     "wink_right":    "right_click",
-    "mouth_open":    "double_click",
+    "mouth_open":    "left_click",
     "smile":         "scroll_down",
     "pucker":        "scroll_up",
-    "eyebrow_raise": "pause_tracking",
-    "cheek_puff":    "none"
+    "eyebrow_raise": "pause_tracking"
   },
   "gesture_thresholds": {
     "wink_left":     {"trigger": 0.60, "release": 0.25},
@@ -25,7 +24,6 @@
     "mouth_open":    {"trigger": 0.50, "release": 0.30},
     "smile":         {"trigger": 0.55, "release": 0.35},
     "pucker":        {"trigger": 0.80, "release": 0.30},
-    "eyebrow_raise": {"trigger": 0.80, "release": 0.25},
-    "cheek_puff":    {"trigger": 0.40, "release": 0.25}
+    "eyebrow_raise": {"trigger": 0.80, "release": 0.25}
   }
 }

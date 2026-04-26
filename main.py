@@ -1,5 +1,5 @@
 """
-NoseCursor entry point.
+Unbound entry point.
 
 Usage:
     python main.py [--camera INDEX] [--browser]
@@ -23,6 +23,7 @@ from src.cursor_controller import CursorController
 from src.gesture_detector import GestureDetector
 from src.action_dispatcher import ActionDispatcher
 from src.calibration import Calibrator
+from src.speech_controller import SpeechController
 from src.server import AppState, create_app
 
 
@@ -112,7 +113,7 @@ def _toggle_pause(state: AppState, cursor: CursorController) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="NoseCursor")
+    parser = argparse.ArgumentParser(description="Unbound")
     parser.add_argument("--camera", type=int, default=None)
     parser.add_argument(
         "--browser",
@@ -153,6 +154,8 @@ def main() -> None:
         on_hold_end=dispatcher.on_hold_end,
         hold_duration_ms=settings.get("hold_duration_ms", 750),
     )
+
+    state.speech_controller = SpeechController(dispatcher)
 
     _wire_hot_reload(settings, cursor, detector, dispatcher)
 

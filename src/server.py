@@ -1,5 +1,5 @@
 """
-FastAPI settings server for NoseCursor.
+FastAPI settings server for Unbound.
 
 AppState is the single shared object passed between this server and the tracker
 thread in main.py.  All mutable fields that cross thread boundaries are guarded
@@ -28,6 +28,7 @@ class AppState:
         self.tracker = None
         self.calibrator = None
         self.cursor = None
+        self.speech_controller = None
 
         self._lock = threading.Lock()
         self._blendshapes: dict[str, float] = {}
@@ -46,7 +47,7 @@ class AppState:
 
 
 def create_app(state: AppState) -> FastAPI:
-    app = FastAPI(title="NoseCursor")
+    app = FastAPI(title="Unbound")
     ui_dir = resource_path("ui")
 
     app.mount("/static", StaticFiles(directory=str(ui_dir)), name="static")
@@ -82,6 +83,7 @@ def create_app(state: AppState) -> FastAPI:
         return {
             "paused": state.is_paused,
             "calibration_in_progress": state.calibration_in_progress,
+            "speech_active": state.speech_controller is not None and state.speech_controller.active,
         }
 
     # --- Calibration ---
@@ -126,6 +128,24 @@ def create_app(state: AppState) -> FastAPI:
         finally:
             state.calibration_in_progress = False
         return {"status": "ok", "thresholds": thresholds}
+
+    # --- Speech mode ---
+
+    @app.post("/api/speech/start")
+    async def speech_start():
+        if state.speech_controller is None:
+            raise HTTPException(503, "Speech controller not initialised")
+        try:
+            await asyncio.to_thread(state.speech_controller.start)
+        except RuntimeError as exc:
+            raise HTTPException(500, str(exc))
+        return {"status": "speech_active"}
+
+    @app.post("/api/speech/stop")
+    async def speech_stop():
+        if state.speech_controller is not None:
+            state.speech_controller.stop()
+        return {"status": "speech_inactive"}
 
     # --- Tracking control ---
 

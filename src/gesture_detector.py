@@ -13,15 +13,12 @@ TRIGGER_MOUTH_OPEN    = 0.60
 TRIGGER_SMILE         = 0.55
 TRIGGER_PUCKER        = 0.80
 TRIGGER_EYEBROW_RAISE = 0.80
-TRIGGER_CHEEK_PUFF    = 0.40
-
 RELEASE_WINK_LEFT     = 0.25
 RELEASE_WINK_RIGHT    = 0.35
 RELEASE_MOUTH_OPEN    = 0.30
 RELEASE_SMILE         = 0.35
 RELEASE_PUCKER        = 0.30
 RELEASE_EYEBROW_RAISE = 0.25
-RELEASE_CHEEK_PUFF    = 0.25
 
 # When detecting a wink, the other eye must stay below this or it counts as a full blink.
 BLINK_CROSS_EYE_MAX = 0.40
@@ -69,7 +66,6 @@ class GestureDetector:
         "smile":         _GestureConfig(TRIGGER_SMILE,         RELEASE_SMILE),
         "pucker":        _GestureConfig(TRIGGER_PUCKER,        RELEASE_PUCKER),
         "eyebrow_raise": _GestureConfig(TRIGGER_EYEBROW_RAISE, RELEASE_EYEBROW_RAISE),
-        "cheek_puff":    _GestureConfig(TRIGGER_CHEEK_PUFF,    RELEASE_CHEEK_PUFF),
     }
 
     def __init__(
@@ -106,8 +102,6 @@ class GestureDetector:
             return bs.get("mouthPucker", 0.0)
         if name == "eyebrow_raise":
             return bs.get("browInnerUp", 0.0)
-        if name == "cheek_puff":
-            return bs.get("cheekPuff", 0.0)
         return 0.0
 
     def update(self, blendshapes: dict[str, float]) -> None:

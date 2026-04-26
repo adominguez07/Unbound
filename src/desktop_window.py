@@ -6,7 +6,7 @@ def launch(url: str, app_state) -> None:
     try:
         import webview
         window = webview.create_window(
-            "NoseCursor",
+            "Unbound",
             url=url,
             width=1100,
             height=750,

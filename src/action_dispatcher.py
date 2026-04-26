@@ -12,7 +12,6 @@ GESTURE_BINDINGS: dict[str, str] = {
     "smile":         "scroll_down",
     "pucker":        "scroll_up",
     "eyebrow_raise": "pause_tracking",
-    "cheek_puff":    "none",
 }
 
 # Lines scrolled per tick while a scroll gesture is held
@@ -23,13 +22,14 @@ SCROLL_INTERVAL = 0.08
 
 
 def _toggle_osk() -> None:
-    """Open the Windows On-Screen Keyboard, or close it if already running."""
-    result = subprocess.run(
-        ["tasklist", "/fi", "imagename eq osk.exe"],
-        capture_output=True, text=True,
-    )
-    if "osk.exe" in result.stdout.lower():
-        subprocess.run(["taskkill", "/f", "/im", "osk.exe"], capture_output=True)
+    """Open the Windows On-Screen Keyboard, or close it if already visible."""
+    import ctypes
+    user32 = ctypes.windll.user32
+    # FindWindowW by the OSK's registered window class is more reliable than
+    # tasklist, which can miss the process depending on how Windows launched it.
+    hwnd = user32.FindWindowW("OSKMainClass", None)
+    if hwnd:
+        user32.PostMessageW(hwnd, 0x0010, 0, 0)  # WM_CLOSE
     else:
         subprocess.Popen("osk", shell=True)
 
@@ -42,10 +42,27 @@ class ActionDispatcher:
     ) -> None:
         self._bindings = dict(bindings)
         self._on_pause_toggle = on_pause_toggle
-        # Maps gesture name → stop-event for its active scroll thread
         self._scroll_threads: dict[str, threading.Event] = {}
+        # When True, gesture tap/hold callbacks are no-ops — speech mode owns actions.
+        self.speech_mode: bool = False
+
+    def execute(self, action: str) -> None:
+        """Fire an action directly — used by SpeechController."""
+        if action == "left_click":
+            pyautogui.click()
+        elif action == "right_click":
+            pyautogui.rightClick()
+        elif action == "double_click":
+            pyautogui.doubleClick()
+        elif action == "open_osk":
+            _toggle_osk()
+        elif action == "pause_tracking":
+            if self._on_pause_toggle:
+                self._on_pause_toggle()
 
     def on_tap(self, gesture: str) -> None:
+        if self.speech_mode:
+            return
         action = self._bindings.get(gesture, "none")
         print(f"[tap]  {gesture:<16} -> {action}")
         if action == "left_click":
@@ -61,6 +78,8 @@ class ActionDispatcher:
                 self._on_pause_toggle()
 
     def on_hold_start(self, gesture: str) -> None:
+        if self.speech_mode:
+            return
         action = self._bindings.get(gesture, "none")
         print(f"[hold] {gesture:<16} -> {action}  START")
         if action in ("scroll_up", "scroll_down"):
@@ -69,6 +88,8 @@ class ActionDispatcher:
             pyautogui.mouseDown()
 
     def on_hold_end(self, gesture: str) -> None:
+        if self.speech_mode:
+            return
         action = self._bindings.get(gesture, "none")
         print(f"[hold] {gesture:<16} -> {action}  END")
         if action in ("scroll_up", "scroll_down"):
