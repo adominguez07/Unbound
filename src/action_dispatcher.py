@@ -1,3 +1,4 @@
+import subprocess
 import threading
 import time
 from typing import Callable
@@ -5,9 +6,9 @@ import pyautogui
 
 # --- Hardcoded bindings (edit these to test different gesture → action mappings) ---
 GESTURE_BINDINGS: dict[str, str] = {
-    "wink_left":     "left_click",
+    "wink_left":     "open_osk",
     "wink_right":    "right_click",
-    "mouth_open":    "double_click",
+    "mouth_open":    "left_click",
     "smile":         "scroll_down",
     "pucker":        "scroll_up",
     "eyebrow_raise": "pause_tracking",
@@ -15,10 +16,22 @@ GESTURE_BINDINGS: dict[str, str] = {
 }
 
 # Lines scrolled per tick while a scroll gesture is held
-SCROLL_LINES = 20
+SCROLL_LINES = 30
 # Seconds between each scroll tick during a hold
 SCROLL_INTERVAL = 0.08
 # ------------------------------------------------------------------------------------
+
+
+def _toggle_osk() -> None:
+    """Open the Windows On-Screen Keyboard, or close it if already running."""
+    result = subprocess.run(
+        ["tasklist", "/fi", "imagename eq osk.exe"],
+        capture_output=True, text=True,
+    )
+    if "osk.exe" in result.stdout.lower():
+        subprocess.run(["taskkill", "/f", "/im", "osk.exe"], capture_output=True)
+    else:
+        subprocess.Popen("osk", shell=True)
 
 
 class ActionDispatcher:
@@ -41,6 +54,8 @@ class ActionDispatcher:
             pyautogui.rightClick()
         elif action == "double_click":
             pyautogui.doubleClick()
+        elif action == "open_osk":
+            _toggle_osk()
         elif action == "pause_tracking":
             if self._on_pause_toggle:
                 self._on_pause_toggle()
@@ -50,7 +65,7 @@ class ActionDispatcher:
         print(f"[hold] {gesture:<16} -> {action}  START")
         if action in ("scroll_up", "scroll_down"):
             self._start_scroll(gesture, action)
-        elif action == "drag_toggle":
+        elif action in ("drag_toggle", "left_click"):
             pyautogui.mouseDown()
 
     def on_hold_end(self, gesture: str) -> None:
@@ -58,7 +73,7 @@ class ActionDispatcher:
         print(f"[hold] {gesture:<16} -> {action}  END")
         if action in ("scroll_up", "scroll_down"):
             self._stop_scroll(gesture)
-        elif action == "drag_toggle":
+        elif action in ("drag_toggle", "left_click"):
             pyautogui.mouseUp()
 
     def _start_scroll(self, gesture: str, action: str) -> None:

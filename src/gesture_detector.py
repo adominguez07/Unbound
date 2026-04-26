@@ -7,16 +7,16 @@ from typing import Callable
 # Raise trigger to make a gesture harder to fire; lower it to make it easier.
 # Release must always be below trigger (hysteresis prevents flicker).
 
-TRIGGER_WINK_LEFT     = 0.60
+TRIGGER_WINK_LEFT     = 0.50
 TRIGGER_WINK_RIGHT    = 0.60
-TRIGGER_MOUTH_OPEN    = 0.50
+TRIGGER_MOUTH_OPEN    = 0.60
 TRIGGER_SMILE         = 0.55
 TRIGGER_PUCKER        = 0.80
 TRIGGER_EYEBROW_RAISE = 0.80
 TRIGGER_CHEEK_PUFF    = 0.40
 
 RELEASE_WINK_LEFT     = 0.25
-RELEASE_WINK_RIGHT    = 0.25
+RELEASE_WINK_RIGHT    = 0.35
 RELEASE_MOUTH_OPEN    = 0.30
 RELEASE_SMILE         = 0.35
 RELEASE_PUCKER        = 0.30

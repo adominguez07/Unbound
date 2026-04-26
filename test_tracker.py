@@ -81,6 +81,14 @@ def main() -> None:
     print(f"Neutral set to ({avg_x:.4f}, {avg_y:.4f}). Tracking active.")
     cv2.destroyAllWindows()
 
+    # from src.settings_manager import SettingsManager
+    # from src.calibration import Calibrator
+
+    # settings = SettingsManager()
+    # calibrator = Calibrator(tracker, settings)
+    # calibrator.capture_all_gestures()
+
+
     # --- Main loop ---
     try:
         while True:

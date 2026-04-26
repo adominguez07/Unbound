@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoseCursor Settings</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>NoseCursor</h1>
+    <div class="header-controls">
+      <span id="tracking-badge" class="badge badge-active">Tracking</span>
+      <button id="btn-pause-resume" class="btn btn-secondary">Pause</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+
+    <!-- Left column -->
+    <div class="col">
+
+      <section class="card">
+        <h2>Movement</h2>
+
+        <div class="field">
+          <label for="camera-index">Camera Index</label>
+          <input type="number" id="camera-index" min="0" max="9" value="0">
+          <p class="hint">0 = default webcam. Increment if you have multiple cameras.</p>
+        </div>
+
+        <div class="field">
+          <label for="movement-mode">Mode</label>
+          <select id="movement-mode">
+            <option value="joystick">Joystick — distance from neutral = cursor speed</option>
+            <option value="absolute">Absolute — face region maps to screen region</option>
+          </select>
+        </div>
+
+        <div class="field slider-field">
+          <label for="sensitivity">Sensitivity <span class="val" id="sensitivity-val"></span></label>
+          <input type="range" id="sensitivity" min="0.01" max="0.2" step="0.005">
+        </div>
+
+        <div class="field slider-field">
+          <label for="smoothing-alpha">Smoothing <span class="val" id="smoothing-alpha-val"></span></label>
+          <input type="range" id="smoothing-alpha" min="0.05" max="0.95" step="0.05">
+          <p class="hint">Lower = smoother but laggier.</p>
+        </div>
+
+        <div class="field slider-field">
+          <label for="deadzone-radius">Deadzone <span class="val" id="deadzone-radius-val"></span></label>
+          <input type="range" id="deadzone-radius" min="0.005" max="0.1" step="0.005">
+          <p class="hint">Ignore small movements within this radius of neutral.</p>
+        </div>
+
+        <div class="field slider-field">
+          <label for="acceleration-expo">Acceleration <span class="val" id="acceleration-expo-val"></span></label>
+          <input type="range" id="acceleration-expo" min="0.5" max="3.0" step="0.1">
+          <p class="hint">1.0 = linear. Higher = slow near center, fast at edges.</p>
+        </div>
+
+        <div class="field slider-field">
+          <label for="hold-duration">Hold Duration <span class="val" id="hold-duration-val"></span> ms</label>
+          <input type="range" id="hold-duration" min="200" max="1500" step="50">
+          <p class="hint">How long to hold a gesture before it counts as a hold (not a tap).</p>
+        </div>
+
+        <div class="field checkbox-field">
+          <label>
+            <input type="checkbox" id="failsafe-enabled">
+            PyAutoGUI failsafe (corner stop)
+          </label>
+          <p class="hint">Move cursor to top-left corner to stop the app in an emergency.</p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Gesture Bindings</h2>
+        <p class="hint">Assign an action to each facial gesture. Set to "None" to disable.</p>
+        <div id="gesture-bindings"></div>
+
+        <details class="thresholds-detail">
+          <summary>Threshold Overrides</summary>
+          <p class="hint">Fine-tune trigger and release scores per gesture. Run Calibration first for best results.</p>
+          <div id="gesture-thresholds"></div>
+        </details>
+      </section>
+
+    </div>
+
+    <!-- Right column -->
+    <div class="col">
+
+      <section class="card">
+        <h2>Calibration</h2>
+        <p>Calibrate once so thresholds match your face and range of motion.</p>
+
+        <div class="calib-block">
+          <button id="btn-calib-neutral" class="btn btn-primary btn-wide">
+            Calibrate Neutral Face (3 s)
+          </button>
+          <p class="hint">Hold your face still and relaxed while this runs.</p>
+        </div>
+
+        <h3>Per-Gesture Calibration</h3>
+        <p class="hint">Perform each gesture clearly for 2 seconds when prompted.</p>
+        <div id="gesture-calib-buttons" class="calib-grid"></div>
+
+        <div id="calib-status" class="calib-status hidden"></div>
+      </section>
+
+      <section class="card">
+        <h2>Live Blendshapes</h2>
+        <p class="hint">Perform gestures to see their scores. Use these values to tune thresholds.</p>
+        <div id="blendshape-bars"></div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer>
+    <span id="save-status" class="save-status"></span>
+    <div class="footer-btns">
+      <button id="btn-save" class="btn btn-primary">Save Settings</button>
+      <button id="btn-reset" class="btn btn-danger">Reset to Defaults</button>
+      <button id="btn-quit" class="btn btn-danger">Quit NoseCursor</button>
+    </div>
+  </footer>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

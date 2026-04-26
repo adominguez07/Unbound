@@ -1,27 +1,31 @@
 {
   "camera_index": 0,
   "movement_mode": "joystick",
-  "sensitivity": 1.5,
-  "smoothing_alpha": 0.3,
-  "deadzone_radius": 0.02,
+  "sensitivity": 0.05,
+  "smoothing_alpha": 0.35,
+  "deadzone_radius": 0.03,
+  "acceleration_expo": 0.8,
   "failsafe_enabled": true,
-  "hold_duration_ms": 600,
+  "hold_duration_ms": 750,
+  "neutral_nose_x": null,
+  "neutral_nose_y": null,
+  "neutral_blendshapes": {},
   "gesture_bindings": {
-    "wink_left": "left_click",
-    "wink_right": "right_click",
-    "mouth_open": "double_click",
-    "smile": "none",
-    "pucker": "scroll_up",
+    "wink_left":     "open_osk",
+    "wink_right":    "right_click",
+    "mouth_open":    "double_click",
+    "smile":         "scroll_down",
+    "pucker":        "scroll_up",
     "eyebrow_raise": "pause_tracking",
-    "cheek_puff": "scroll_down"
+    "cheek_puff":    "none"
   },
   "gesture_thresholds": {
-    "wink_left":     {"trigger": 0.5, "release": 0.3},
-    "wink_right":    {"trigger": 0.5, "release": 0.3},
-    "mouth_open":    {"trigger": 0.5, "release": 0.3},
-    "smile":         {"trigger": 0.6, "release": 0.4},
-    "pucker":        {"trigger": 0.5, "release": 0.3},
-    "eyebrow_raise": {"trigger": 0.5, "release": 0.3},
-    "cheek_puff":    {"trigger": 0.5, "release": 0.3}
+    "wink_left":     {"trigger": 0.60, "release": 0.25},
+    "wink_right":    {"trigger": 0.60, "release": 0.25},
+    "mouth_open":    {"trigger": 0.50, "release": 0.30},
+    "smile":         {"trigger": 0.55, "release": 0.35},
+    "pucker":        {"trigger": 0.80, "release": 0.30},
+    "eyebrow_raise": {"trigger": 0.80, "release": 0.25},
+    "cheek_puff":    {"trigger": 0.40, "release": 0.25}
   }
 }

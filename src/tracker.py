@@ -35,6 +35,8 @@ class FaceTracker:
         )
         self._landmarker = vision.FaceLandmarker.create_from_options(options)
 
+        self._last_timestamp_ms: int = 0
+
         self._cap = cv2.VideoCapture(camera_index)
         if not self._cap.isOpened():
             raise RuntimeError(
@@ -50,8 +52,14 @@ class FaceTracker:
         frame_rgb = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2RGB)
         mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame_rgb)
 
-        # detect_for_video requires monotonically increasing timestamps in milliseconds.
-        timestamp_ms = time.monotonic_ns() // 1_000_000
+        # detect_for_video requires strictly increasing timestamps in milliseconds.
+        # Two frames captured within the same millisecond would produce equal values,
+        # so clamp to at least one tick ahead of the previous call.
+        timestamp_ms = max(
+            time.monotonic_ns() // 1_000_000,
+            self._last_timestamp_ms + 1,
+        )
+        self._last_timestamp_ms = timestamp_ms
 
         result = self._landmarker.detect_for_video(mp_image, timestamp_ms)
 
