@@ -3,6 +3,7 @@ import threading
 import time
 from typing import Callable
 import pyautogui
+from . import sounds
 
 # --- Hardcoded bindings (edit these to test different gesture → action mappings) ---
 GESTURE_BINDINGS: dict[str, str] = {
@@ -39,9 +40,11 @@ class ActionDispatcher:
         self,
         bindings: dict[str, str] = GESTURE_BINDINGS,
         on_pause_toggle: Callable[[], None] | None = None,
+        on_dictation_toggle: Callable[[], None] | None = None,
     ) -> None:
         self._bindings = dict(bindings)
         self._on_pause_toggle = on_pause_toggle
+        self._on_dictation_toggle = on_dictation_toggle
         self._scroll_threads: dict[str, threading.Event] = {}
         # When True, gesture tap/hold callbacks are no-ops — speech mode owns actions.
         self.speech_mode: bool = False
@@ -50,6 +53,7 @@ class ActionDispatcher:
         """Fire an action directly — used by SpeechController."""
         if action == "left_click":
             pyautogui.click()
+            sounds.click()
         elif action == "right_click":
             pyautogui.rightClick()
         elif action == "double_click":
@@ -59,14 +63,20 @@ class ActionDispatcher:
         elif action == "pause_tracking":
             if self._on_pause_toggle:
                 self._on_pause_toggle()
+        elif action == "dictation_toggle":
+            if self._on_dictation_toggle:
+                self._on_dictation_toggle()
 
     def on_tap(self, gesture: str) -> None:
-        if self.speech_mode:
-            return
         action = self._bindings.get(gesture, "none")
+        # dictation_toggle must pass through even when speech mode is active
+        # so the user can stop dictation with the same gesture that started it.
+        if self.speech_mode and action != "dictation_toggle":
+            return
         print(f"[tap]  {gesture:<16} -> {action}")
         if action == "left_click":
             pyautogui.click()
+            sounds.click()
         elif action == "right_click":
             pyautogui.rightClick()
         elif action == "double_click":
@@ -76,6 +86,9 @@ class ActionDispatcher:
         elif action == "pause_tracking":
             if self._on_pause_toggle:
                 self._on_pause_toggle()
+        elif action == "dictation_toggle":
+            if self._on_dictation_toggle:
+                self._on_dictation_toggle()
 
     def on_hold_start(self, gesture: str) -> None:
         if self.speech_mode:

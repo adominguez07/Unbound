@@ -25,7 +25,7 @@ _ENUM_KEYS: dict[str, set] = {
 _VALID_ACTIONS = {
     "left_click", "right_click", "double_click",
     "scroll_up", "scroll_down", "drag_toggle",
-    "pause_tracking", "open_osk", "none",
+    "pause_tracking", "open_osk", "dictation_toggle", "none",
 }
 
 _VALID_GESTURES = {
@@ -70,11 +70,20 @@ class SettingsManager:
             return dict(self._data)
 
     def update(self, patch: dict[str, Any]) -> None:
-        """Apply multiple keys at once, validate each, then notify once per key."""
-        validated = {k: self._validate(k, v) for k, v in patch.items()}
+        """Apply multiple keys at once, validating each independently.
+
+        Invalid keys are skipped with a console warning so that a bad threshold
+        slider value never silently blocks a gesture binding change.
+        """
+        applied = {}
+        for k, v in patch.items():
+            try:
+                applied[k] = self._validate(k, v)
+            except (ValueError, TypeError) as exc:
+                print(f"[settings] skipped invalid value for {k!r}: {exc}")
         with self._lock:
-            self._data.update(validated)
-        for k, v in validated.items():
+            self._data.update(applied)
+        for k, v in applied.items():
             self._notify(k, v)
 
     def on_change(self, callback: Callable[[str, Any], None]) -> None:

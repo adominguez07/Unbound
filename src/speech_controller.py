@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 import pyautogui
 import pyperclip
+from . import sounds
 
 if TYPE_CHECKING:
     from .action_dispatcher import ActionDispatcher
@@ -80,6 +81,26 @@ class SpeechController:
             pyautogui.mouseUp()
             self._dragging = False
         print("[speech] stopped")
+
+    def toggle_dictation(self) -> None:
+        """Gesture shortcut: start dictation if not active, stop if active."""
+        if not self.active:
+            try:
+                self.start()
+            except RuntimeError as exc:
+                print(f"[speech] cannot start for dictation: {exc}")
+                return
+            self._dictation_mode = True
+            sounds.dictation_on()
+            print("[speech] dictation started via gesture")
+        elif self._dictation_mode:
+            # Second tap stops everything — same gesture is the off switch.
+            sounds.dictation_off()
+            self.stop()
+        else:
+            self._dictation_mode = True
+            sounds.dictation_on()
+            print("[speech] dictation on via gesture")
 
     # ------------------------------------------------------------------
 

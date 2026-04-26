@@ -112,6 +112,11 @@ def _toggle_pause(state: AppState, cursor: CursorController) -> None:
     print(f"Tracking {'PAUSED' if cursor.paused else 'RESUMED'}")
 
 
+def _toggle_dictation(state: AppState) -> None:
+    if state.speech_controller is not None:
+        state.speech_controller.toggle_dictation()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Unbound")
     parser.add_argument("--camera", type=int, default=None)
@@ -147,6 +152,7 @@ def main() -> None:
     dispatcher = ActionDispatcher(
         bindings=settings.get("gesture_bindings"),
         on_pause_toggle=lambda: _toggle_pause(state, cursor),
+        on_dictation_toggle=lambda: _toggle_dictation(state),
     )
     detector = GestureDetector(
         on_tap=dispatcher.on_tap,
